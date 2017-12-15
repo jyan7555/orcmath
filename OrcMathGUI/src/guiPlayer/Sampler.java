@@ -14,6 +14,7 @@ import guiTeacher.components.*;
 import guiTeacher.interfaces.KeyedComponent;
 import guiTeacher.interfaces.Visible;
 import guiTeacher.userInterfaces.FullFunctionScreen;
+import playground.Book;
 
 public class Sampler extends GUIApplication {
 
@@ -119,7 +120,7 @@ public class Sampler extends GUIApplication {
 				}
 			}); 
 			viewObjects.add(cb);
-			viewObjects.add(new Pencil());
+			viewObjects.add(new Book(40,40,100,100));
 		}
 		
 		public void mouseDragged(MouseEvent m) {
