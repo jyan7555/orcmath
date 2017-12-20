@@ -15,10 +15,12 @@ import guiTeacher.userInterfaces.FullFunctionScreen;
 public class CatalogScreen extends FullFunctionScreen implements FileRequester{
 	
 	private static final long serialVersionUID = 258186143576427947L;
-	private TextField text;
+	private TextField name;
+	private TextField price;
 	private TextArea newText;
 	private Button addButton;
 	private FileOpenButton openButton;
+	private CatalogMaker catalog;
 	
 	public CatalogScreen(int width, int height) {
 		super(width,height);
@@ -27,7 +29,9 @@ public class CatalogScreen extends FullFunctionScreen implements FileRequester{
 	@Override
 	public void initAllObjects(List<Visible> viewObjects) {
 		newText = new TextArea(50,50,200,30,"Here");
-		text = new TextField(100,50,200,30, "Text goes here", "Description");
+		name = new TextField(100,50,200,30, "", "Name");
+		price = new TextField(300,50,200,30, "", "Cost");
+		price.setInputType(TextField.INPUT_TYPE_NUMERIC);
 		addButton = new Button(300,50,75,75, "add", new Action() {
 			
 			@Override
@@ -36,12 +40,17 @@ public class CatalogScreen extends FullFunctionScreen implements FileRequester{
 			}
 		});
 		openButton = new FileOpenButton(50,250,75,75,null,this);
-		viewObjects.add(text);
+		viewObjects.add(name);
+		viewObjects.add(price);
 		viewObjects.add(newText);
 		viewObjects.add(addButton);
 	}
 	protected void addClicked() {
-		newText.setText("Hi");
+		LeagueItems p = new LeagueItems(name.getText(),Integer.parseInt(price.getText()));
+		newText.setText(p.name);
+		catalog.add(p);
+		name.setText("");
+		price.setText("");
 	}
 
 	@Override

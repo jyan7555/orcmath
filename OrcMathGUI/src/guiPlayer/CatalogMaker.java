@@ -11,7 +11,7 @@ public class CatalogMaker {
 	public CatalogMaker() {
 		list = new ArrayList<LeagueItems>();
 		//list.add(new LeagueItems("Infinity Edge", 3400, "resources/infinityedge.png"));
-		list.add(new LeagueItems("Statikk Shiv", 2600, "resources/statshiv.png"));
+		list.add(new LeagueItems("Statikk Shiv", 2600));//"resources/statshiv.png"));
 	}
 
 	public static void main(String[] args) {
@@ -34,12 +34,12 @@ public class CatalogMaker {
 		String item = in.nextLine();
 		System.out.println("How much does it cost?");
 		int price = in.nextInt();
-		System.out.println("Source?");
+		/*System.out.println("Source?");
 		String link = "";
 		while (link.equals("")) {
 			link = in.nextLine();
-		}
-		list.add(new LeagueItems(item, price, link));
+		}*/
+		list.add(new LeagueItems(item, price));
 	}
 	public void save() {
 		try {
@@ -55,5 +55,6 @@ public class CatalogMaker {
 	public void add(LeagueItems a) {
 		list.add(a);
 	}
+	
 
 }
