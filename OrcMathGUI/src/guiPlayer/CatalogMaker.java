@@ -1,5 +1,7 @@
 package guiPlayer;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -38,6 +40,20 @@ public class CatalogMaker {
 			link = in.nextLine();
 		}
 		list.add(new LeagueItems(item, price, link));
+	}
+	public void save() {
+		try {
+			FileWriter fw = new FileWriter("LeagueCatalog.csv");
+			for (LeagueItems b : list) {
+				fw.write(b + "\n");
+			}
+			fw.close();
+		}catch(IOException e) {
+			
+		}
+	}
+	public void add(LeagueItems a) {
+		list.add(a);
 	}
 
 }
