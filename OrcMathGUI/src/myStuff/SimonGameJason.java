@@ -1,28 +1,14 @@
 package myStuff;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import guiTeacher.GUIApplication;
+import guiTeacher.components.Action;
 import guiTeacher.components.TextLabel;
 
 public class SimonGameJason extends GUIApplication{
-	private TextLabel label;
-	private ButtonInterfaceJason[] buttonInt;
-	private ProgressInterfaceJason progressInt;
-	private ArrayList<MoveInterfaceJason> moveInt;
 	
-	int roundNumber;
-	boolean acceptingInput;
-	int sequenceIndex;
-	int lastSelectedButton;
-	
-	public SimonGameJason(int width, int height) {
-		super(width, height);
-		Thread app = new Thread(this);
-		app.start();
-	}
-
-	@Override
 	public void initScreen() {
 		/*addButtons();
 		for(ButtonInterfaceBen b: buttons){ 
@@ -41,32 +27,12 @@ public class SimonGameJason extends GUIApplication{
 
 	}
 	
-	public void addButtons() {
-		
-	}
-	/**
-	 * Returns ProgressInterfaceJason
-	 * @return
-	 */
-	public ProgressInterfaceJason getProgress() {
-		return null;
-	}
-	
-	
 	public static void main(String[] arg) {
 		
 	}
 	
-	private MoveInterfaceJason randomMove() {
-	    int bIndex = (int)(Math.random()*buttonInt.length);
-	    while(bIndex == lastSelectedButton){
-	        bIndex = (int)(Math.random()*buttonInt.length);
-	    }
-	    return getMove(bIndex);
-	}
-	
-	private MoveInterfaceJason getMove(int bIndex) {
-	    return moveInt.get(bIndex);
+	public SimonGameJason(int width, int height) {
+		super(width,height);
 	}
 
 
