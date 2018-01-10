@@ -1,175 +1,191 @@
-
 package myStuff;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import guiTeacher.components.Action;
-import guiTeacher.components.TextLabel;
+import guiTeacher.components.*;
 import guiTeacher.interfaces.Visible;
 import guiTeacher.userInterfaces.ClickableScreen;
 
-public class SimonScreenJason extends ClickableScreen implements Runnable{
-	private TextLabel label;
-	private ButtonInterfaceJason[] buttonInt;
-	private ProgressInterfaceJason progressInt;
-	private ArrayList<MoveInterfaceJason> sequence;
-	
-	int roundNumber;
-	int numberOfButtons;
-	boolean acceptingInput;
-	int sequenceIndex;
-	int lastSelectedButton;
+public class SimonScreenJason extends ClickableScreen implements Runnable {
+
+	private static TextLabel label;
+	private ProgressInterfaceJason progress;
+	private ArrayList<MoveInterfaceJason > moveList;
+	private ButtonInterfaceJason [] buttons;
+	private int roundNum;
+	private boolean validInput;
+	private int sequenceIndex;
+	private int lastSelectedButton;
 	private Color[] colors;
 	
 	public SimonScreenJason(int width, int height) {
 		super(width, height);
-		Thread app = new Thread(this);
-		numberOfButtons = 5;
-		colors = new Color[numberOfButtons];
-		buttonInt = new ButtonInterfaceJason[numberOfButtons];
-		colors[0] = Color.blue;
-		colors[1] = Color.red;
-		colors[2] = Color.yellow;
-		colors[3] = Color.green;
-		colors[4] = Color.cyan;
+		Thread app= new Thread(this);
 		app.start();
 	}
-
-	public void initScreen() {
-
-	}
-	public void addButtons() {
-		for (int i=0; i < numberOfButtons; i++) {
-			final ButtonInterfaceJason b= getAButton();
-			b.setColor(colors[i]);
-			b.setX(5*Math.cos(72*i));
-			b.setY(5*Math.sin(72*i));
-			b.setAction(new Action() {
-				public void act() {
-					if (acceptingInput) {
-						Thread blink = new Thread(new Runnable(){
-
-							public void run(){
-								b.highlight();
-								try {
-								Thread.sleep(800);
-								} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								}
-								b.dim();
-							}
-
-							}
-						
-						);
-						blink.start();
-						if (b == sequence.get(sequenceIndex).getButton()) {
-							sequenceIndex++;
-						}
-						else {
-							progressInt.gameOver();
-						}
-						if(sequenceIndex == sequence.size()){ 
-						    Thread nextRound = new Thread(SimonScreenJason.this); 
-						    nextRound.start(); 
-						}
-					}
-				}
-			});
-			buttonInt[i] = b;	
-		}
-	}
-	
-	/**
-	 * Returns ProgressInterfaceJason
-	 * @return
-	 */
-	public ProgressInterfaceJason getProgress() {
-		return null;
-	}
-	
-	
-	public static void main(String[] arg) {
+	public void run() {
+		 label.setText("");
+	     nextRound();
 		
 	}
-	
-	private MoveInterfaceJason randomMove() {
-	    int bIndex = (int)(Math.random()*buttonInt.length);
-	    while(bIndex == lastSelectedButton){
-	        bIndex = (int)(Math.random()*buttonInt.length);
-	    }
-	    return getMove(bIndex);
-	}
-	
-	private MoveInterfaceJason getMove(int bIndex) {
-	    return null;
-	}
-	
-	/**
-	Placeholder until partner finishes implementation of ButtonInterface	
-	*/
-	private ButtonInterfaceJason getAButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	//
-
-	@Override
-
-	public void run(){
-		label.setText("");
-		nextRound();
-	}
-
 	private void nextRound() {
-		acceptingInput = false;
-		roundNumber++;
-		sequence.add(randomMove());
-		progressInt.setRound(roundNumber);
-		progressInt.setSequence(sequence.size());
-		changeText("Simon's turn");
+		validInput = false;
+		roundNum++;
+		moveList.add(randomMove());
+		progress.setRound(roundNum);
+		progress.setSequence(moveList.size());
+		changeText("Simon's Turn");
 		label.setText("");
 		playSequence();
-		changeText("Your turn");
-		acceptingInput = true;
+		changeText("Your Turn");
+		validInput = true;
 		sequenceIndex = 0;
+		
 	}
 
 	private void playSequence() {
-		ButtonInterfaceJason b = null;
-		for(int i = 0; i < sequence.size(); i++) {
+		ButtonInterfaceJason  b = null;
+		for(int i = 0; i < moveList.size(); i++) {
 			if(b != null) {
 				b.dim();
-				b = sequence.get(i).getButton();
+				b = moveList.get(i).getButton();
 				b.highlight();
-				int sleepTime = (10000 - (roundNumber * 100)) + 1000;
+				
 				try {
-					Thread.sleep(sleepTime);
-				}catch(InterruptedException e){
-					e.printStackTrace();
-				}
+	                Thread.sleep((int)(1000*roundNum));
+	            } catch (InterruptedException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
 				b.dim();
 			}
 		}
-	}
-
-	private void changeText(String string) {
-		label.setText(string);
-		try {
-			Thread.sleep(1000);
-		}catch(InterruptedException e){
-			e.printStackTrace();
-		}
+		
+		
+		
 	}
 
 	@Override
 	public void initAllObjects(List<Visible> viewObjects) {
-		// TODO Auto-generated method stub
-		
+		addButtons();
+		for(ButtonInterfaceJason  b:buttons) {
+			viewObjects.add(b);
+		}
+		progress = getProgress();
+		label= new TextLabel(10,30,200,200,"testing");
+		moveList= new ArrayList<MoveInterfaceJason >();
+		lastSelectedButton=-1;
+		moveList.add(randomMove());
+		moveList.add(randomMove());
+		for(int i = 0; i < sequenceIndex; i++) {
+			moveList.add(randomMove());
+		}
+		roundNum=0;
+		progress.setRound(roundNum);
+		viewObjects.add(progress);
+		viewObjects.add(label);
+	
+
 	}
+	private MoveInterfaceJason  randomMove() {
+		int random= (int)(Math.random()*buttons.length);
+		while(random==lastSelectedButton) {
+			random=(int)(Math.random()*buttons.length);
+		}
+		return getMove(random);
+	}
+	/**
+	Placeholder until partner finishes implementation of MoveInterface
+	*/
+	private MoveInterfaceJason  getMove(int random) {
+		return new MoveJason(buttons[random]);
+	}
+
+	/**
+	Placeholder until partner finishes implementation of ProgressInterface
+	*/
+
+	private ProgressInterfaceJason getProgress() {
+		return new ProgressJason(100, 100, 200, 200);
+	}
+
+	private void addButtons() {
+		
+		colors = new Color[4];
+		colors[0] = Color.RED;
+		colors[1] = Color.GREEN;
+		colors[2] = Color.BLUE;
+		colors[3] = Color.CYAN;
+		buttons= new ButtonInterfaceJason [4];
+		
+		for(int i=0;i<buttons.length;i++) {
+			final ButtonInterfaceJason b = getAButton(100,i*50+50,50,50);
+			b.setColor(colors[i]);
+			b.setAction(new Action() {
+				
+				@Override
+				public void act() {
+					if(validInput) {
+						Thread blink= new Thread(new Runnable() {
+							
+							@Override
+							public void run() {
+								b.highlight();
+								try{
+									Thread.sleep(800);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								b.dim();
+							}
+						});
+						blink.start();
+						if(b == moveList.get(sequenceIndex).getButton()) {
+		    		    	sequenceIndex++;
+		    		    }
+		    		    else {
+		    		    	progress.gameOver();
+		    		    }
+		    		    if(sequenceIndex == moveList.size()){
+		    		        Thread nextRound = new Thread(SimonScreenJason.this);
+		    		        nextRound.start();
+		    		    }
+							
+					}
+				}
+			});
+			buttons[i]=b;
+		}
+	}
+	/**
+	Placeholder until partner finishes implementation of ButtonInterface
+	 * @param j 
+	 * @param i 
+	*/
+
+	private ButtonInterfaceJason  getAButton(int x, int y,int w,int h) {
+		return new ButtonJason(x, y, w, h, "",null);	
+	}
+
+	
+
+	
+	public static TextLabel getLabel() {
+		return label;
+	}
+	
+
+	private void changeText(String string) {
+		label.setText(string);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+	}
+	}
+
+	
 
 }
